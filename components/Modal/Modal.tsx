@@ -1,40 +1,21 @@
-import { useEffect, useState } from 'react'
-import css from './NoteModal.module.css'
-import { createPortal } from 'react-dom';
+
+import { useRouter } from 'next/navigation';
 
 interface ModalProps {
-    onClose: () => void
     children: React.ReactNode
+    onClose?: () => void;
 }
 
-export default function Modal({ onClose, children }: ModalProps) {
-    const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
-    
-    useEffect(() => {
-        setModalRoot(document.getElementById('modal-root'));
+export default function Modal({ children }: ModalProps) {
+    const router = useRouter();
+    const close = () => router.back();
 
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
-
-    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) onClose();
-    };
-    
-    if (!modalRoot) return null; 
-
-    return createPortal(
-        <div
-            className={css.backdrop}
-            role='dialog'
-            aria-modal='true'
-            onClick={handleBackdropClick}
-        >
-            <div className={css.modal}>{children}</div>
-        </div>,
-        modalRoot
-    );
+    return (
+        <div>
+            <div onClick={(e) => e.stopPropagation()}>
+                {children}
+                <button onClick={close}>Close</button>
+            </div>
+        </div>
+    )
 }
