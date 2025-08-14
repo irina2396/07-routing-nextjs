@@ -53,7 +53,7 @@ function NotesClient({initialNotes,  initialTag}: Props) {
               <Pagination
                 pageCount={data.totalPages}
                 onPageChange={handlePage}
-                currentPage={page}
+                currentPage={page - 1}
               />
             )}
 
