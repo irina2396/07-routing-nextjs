@@ -3,7 +3,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import css from './NotesPage.module.css'
 import { fetchNotes, FetchNotesResponse } from '@/lib/api'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import SearchBox from '@/components/SearchBox/SearchBox'
 import NoteList from '@/components/NoteList/NoteList'
 import Pagination from '@/components/Pagination/Pagination'
@@ -21,20 +21,13 @@ function NotesClient({initialNotes,  initialTag}: Props) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [debouncedSearch] = useDebounce(search, 500);
-  const [tag, setTag] = useState(initialTag || null);
-
-  useEffect(() => {
-    setTag(initialTag || null);
-    setPage(1);
-  }, [initialTag]);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['notes', page, debouncedSearch, tag],
-    queryFn: () => fetchNotes({ page, perPage: 12, search: debouncedSearch, ...(initialTag && initialTag !== 'All' ? {tag: initialTag} : {}) }),
+    queryKey: ['notes', page, debouncedSearch ],
+    queryFn: () => fetchNotes({ page, perPage: 12, search: debouncedSearch, ...(initialTag && initialTag !== 'All' ? { tag: initialTag } : {}), }),
     placeholderData: keepPreviousData,
-    initialData: page === 1 && debouncedSearch === '' && tag === initialTag ? initialNotes : undefined, 
+    initialData: page === 1 && debouncedSearch === '' ? initialNotes : undefined, 
 
   });
 
@@ -43,8 +36,8 @@ function NotesClient({initialNotes,  initialTag}: Props) {
     setPage(1);
   };
 
-  const handlePage = ( selected: number ) => {
-    setPage(selected + 1);
+  const handlePage = ( newPage: number ) => {
+    setPage(newPage);
   }
 
   const closeModal = () => setIsModalOpen(false);
@@ -60,7 +53,7 @@ function NotesClient({initialNotes,  initialTag}: Props) {
               <Pagination
                 pageCount={data.totalPages}
                 onPageChange={handlePage}
-                currentPage={page - 1}
+                currentPage={page}
               />
             )}
 

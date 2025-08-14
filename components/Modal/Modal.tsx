@@ -1,4 +1,4 @@
-
+import css from './NoteModal.module.css'
 import { useRouter } from 'next/navigation';
 
 interface ModalProps {
@@ -11,11 +11,11 @@ export default function Modal({ children }: ModalProps) {
     const close = () => router.back();
 
     return (
-        <div>
-            <div onClick={(e) => e.stopPropagation()}>
+        <div className={css.backdrop}>
+            <div className={css.modal} onClick={(e) => e.stopPropagation()}>
                 {children}
                 <button onClick={close}>Close</button>
             </div>
         </div>
-    )
+    );
 }
