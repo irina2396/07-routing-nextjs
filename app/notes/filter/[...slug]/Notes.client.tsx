@@ -24,7 +24,7 @@ function NotesClient({initialNotes,  initialTag}: Props) {
   const [debouncedSearch] = useDebounce(search, 500);
 
   const { data, isLoading } = useQuery({
-    queryKey: ['notes', page, debouncedSearch ],
+    queryKey: ['notes', page, debouncedSearch, initialTag],
     queryFn: () => fetchNotes({ page, perPage: 12, search: debouncedSearch, ...(initialTag && initialTag !== 'All' ? { tag: initialTag } : {}), }),
     placeholderData: keepPreviousData,
     initialData: page === 1 && debouncedSearch === '' ? initialNotes : undefined, 
